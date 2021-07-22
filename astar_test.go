@@ -10,22 +10,39 @@ func TestAstar_H(t *testing.T) {
 	nodeC := Node{X: 1, Y: 1}
 	nodeD := Node{X: 2, Y: 5}
 
-	if H(nodeA, nodeB) != 1 {
+	// invalid grid
+	_, err := New(Config{GridWidth: 1, GridHeight: 1})
+	if err == nil {
+		t.Fatal("there should be a grid min error", err)
+	}
+
+	// setup a 6x6 grid
+	a, err := New(Config{GridWidth: 6, GridHeight: 6})
+	if err != nil {
+		t.Fatal("there should be no error", err)
+	}
+
+	if a.H(nodeA, nodeB) != 1 {
 		t.Fatal("should be 1")
 	}
-	if H(nodeA, nodeA) != 0 {
+	if a.H(nodeA, nodeA) != 0 {
 		t.Fatal("should be 0")
 	}
-	if H(nodeA, nodeC) != 2 {
+	if a.H(nodeA, nodeC) != 2 {
 		t.Fatal("should be 2")
 	}
-	if H(nodeB, nodeD) != 6 {
+	if a.H(nodeB, nodeD) != 6 {
 		t.Fatal("should be 6")
 	}
 }
 
 func TestGetNeighborNodes(t *testing.T) {
 
+	// setup a 4x4 grid
+	a, err := New(Config{GridWidth: 4, GridHeight: 4})
+	if err != nil {
+		t.Fatal("there should be no error", err)
+	}
 	validList := NewList()
 	invalidList := NewList()
 
@@ -51,17 +68,13 @@ func TestGetNeighborNodes(t *testing.T) {
 		{X: 1, Y: 1},
 		{X: 3, Y: 1},
 		{X: 2, Y: 0},
+		{X: 9, Y: 9},
 	}
 
-	for _, neighbor := range validNeighbors {
-		validList.Add(neighbor)
-	}
+	validList.Fill(validNeighbors)
+	invalidList.Fill(invalidNeighbors)
 
-	for _, neighbor := range invalidNeighbors {
-		invalidList.Add(neighbor)
-	}
-
-	for _, neighbor := range GetNeighborNodes(node) {
+	for _, neighbor := range a.GetNeighborNodes(node) {
 		if validList.Contains(neighbor) {
 			validList.Remove(neighbor)
 		}

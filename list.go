@@ -17,6 +17,11 @@ func (l *List) Add(node Node) {
 	l.nodes = append(l.nodes, node)
 }
 
+// Fill adds a slice of nodes to the list
+func (l *List) Fill(nodes []Node) {
+	l.nodes = append(l.nodes, nodes...)
+}
+
 // All returns the full list of nodes
 func (l *List) All() []Node {
 	return l.nodes
