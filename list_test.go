@@ -23,7 +23,7 @@ func TestList_Add(t *testing.T) {
 
 func TestList_Contains(t *testing.T) {
 	nodeA := Node{X: 0, Y: 0}
-	nodeB := Node{X: 0, Y: 1, Parent: &nodeA}
+	nodeB := Node{X: 0, Y: 1, parent: &nodeA}
 
 	list := NewList()
 
@@ -41,7 +41,7 @@ func TestList_Contains(t *testing.T) {
 
 func TestList_Remove(t *testing.T) {
 	nodeA := Node{X: 0, Y: 0}
-	nodeB := Node{X: 0, Y: 1, Parent: &nodeA}
+	nodeB := Node{X: 0, Y: 1, parent: &nodeA}
 
 	list := NewList()
 
@@ -75,7 +75,7 @@ func TestList_Remove(t *testing.T) {
 
 func TestList_Clear(t *testing.T) {
 	nodeA := Node{X: 0, Y: 0}
-	nodeB := Node{X: 0, Y: 1, Parent: &nodeA}
+	nodeB := Node{X: 0, Y: 1, parent: &nodeA}
 
 	list := NewList()
 
@@ -90,9 +90,9 @@ func TestList_Clear(t *testing.T) {
 }
 
 func TestList_GetIndexOfMinF(t *testing.T) {
-	nodeA := Node{X: 0, Y: 0, F: 2}
-	nodeB := Node{X: 0, Y: 1, F: 3, Parent: &nodeA}
-	nodeC := Node{X: 0, Y: 1, F: 4, Parent: &nodeB}
+	nodeA := Node{X: 0, Y: 0, f: 2}
+	nodeB := Node{X: 0, Y: 1, f: 3, parent: &nodeA}
+	nodeC := Node{X: 0, Y: 1, f: 4, parent: &nodeB}
 
 	list := NewList()
 
@@ -104,7 +104,7 @@ func TestList_GetIndexOfMinF(t *testing.T) {
 		t.Error("Should be index 2")
 	}
 
-	nodeD := Node{X: 0, Y: 1, F: 1, Parent: &nodeC}
+	nodeD := Node{X: 0, Y: 1, f: 1, parent: &nodeC}
 	list.Add(nodeD)
 
 	if list.GetIndexOfMinF() != 3 {
@@ -119,9 +119,9 @@ func TestList_GetIndexOfMinF(t *testing.T) {
 }
 
 func TestList_GetMinF(t *testing.T) {
-	nodeA := Node{X: 1, Y: 0, F: 2}
-	nodeB := Node{X: 2, Y: 2, F: 3, Parent: &nodeA}
-	nodeC := Node{X: 2, Y: 3, F: 4, Parent: &nodeB}
+	nodeA := Node{X: 1, Y: 0, f: 2}
+	nodeB := Node{X: 2, Y: 2, f: 3, parent: &nodeA}
+	nodeC := Node{X: 2, Y: 3, f: 4, parent: &nodeB}
 
 	list := NewList()
 

@@ -12,10 +12,12 @@ import (
 // GridWidth and GridHeight are required and represents
 // the size of the grid
 //
-// InvalidNodes can be used to add obstacles nodes etc.
+// InvalidNodes can be used to add not accessible nodes like obstacles etc.
+// WeightedNodes can be used to add nodes to be avoided like mud or mountains
 type Config struct {
 	GridWidth, GridHeight int
 	InvalidNodes          []Node
+	WeightedNodes         []Node
 }
 
 type astar struct {
@@ -54,22 +56,22 @@ func (a *astar) H(nodeA Node, nodeB Node) int {
 func (a *astar) GetNeighborNodes(node Node) []Node {
 	var neighborNodes []Node
 
-	upNode := Node{X: node.X, Y: node.Y + 1, Parent: &node}
+	upNode := Node{X: node.X, Y: node.Y + 1, parent: &node}
 	if a.isAccessible(upNode) {
 		neighborNodes = append(neighborNodes, upNode)
 	}
 
-	downNode := Node{X: node.X, Y: node.Y - 1, Parent: &node}
+	downNode := Node{X: node.X, Y: node.Y - 1, parent: &node}
 	if a.isAccessible(downNode) {
 		neighborNodes = append(neighborNodes, downNode)
 	}
 
-	leftNode := Node{X: node.X - 1, Y: node.Y, Parent: &node}
+	leftNode := Node{X: node.X - 1, Y: node.Y, parent: &node}
 	if a.isAccessible(leftNode) {
 		neighborNodes = append(neighborNodes, leftNode)
 	}
 
-	rightNode := Node{X: node.X + 1, Y: node.Y, Parent: &node}
+	rightNode := Node{X: node.X + 1, Y: node.Y, parent: &node}
 	if a.isAccessible(rightNode) {
 		neighborNodes = append(neighborNodes, rightNode)
 	}
@@ -152,9 +154,18 @@ func (a *astar) FindPath(startNode, endNode Node) ([]Node, error) {
 
 // calculateNode calculates the F, G and H value for the given node
 func (a *astar) calculateNode(node *Node) {
-	node.G++
-	node.H = a.H(*node, a.endNode)
-	node.F = node.G + node.H
+
+	node.g++
+
+	// check for special node weighting
+	for _, wNode := range a.config.WeightedNodes {
+		if node.X == wNode.X && node.Y == wNode.Y {
+			node.g = node.g + wNode.Weighting
+		}
+	}
+
+	node.h = a.H(*node, a.endNode)
+	node.f = node.g + node.h
 }
 
 // getNodePath returns the chain of parent nodes
@@ -163,10 +174,10 @@ func (a *astar) getNodePath(currentNode Node) []Node {
 	var nodePath []Node
 	lastNode := currentNode
 	for {
-		parentNode := *currentNode.Parent
+		parentNode := *currentNode.parent
 
 		// if the end of node chain
-		if parentNode.Parent == nil {
+		if parentNode.parent == nil {
 			break
 		}
 

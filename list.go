@@ -70,7 +70,7 @@ func (l *List) GetIndexOfMinF() int {
 	lastNode := Node{}
 	lastNodeIndex := -1
 	for index, node := range l.nodes {
-		if lastNodeIndex == -1 || node.F < lastNode.F {
+		if lastNodeIndex == -1 || node.f < lastNode.f {
 			lastNode = node
 			lastNodeIndex = index
 		}
