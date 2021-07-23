@@ -101,7 +101,7 @@ func (a *astar) IsEndNode(checkNode, endNode Node) bool {
 	return checkNode.X == endNode.X && checkNode.Y == endNode.Y
 }
 
-// FindPath starts the a* algorythm for the given start and end node
+// FindPath starts the a* algorithm for the given start and end node
 // The return value will be the fastest way represented as a nodes slice
 //
 // If no path was found it returns nil and an error
