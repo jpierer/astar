@@ -2,6 +2,7 @@ package astar
 
 import (
 	"errors"
+	"fmt"
 	"math"
 )
 
@@ -18,8 +19,9 @@ type Config struct {
 }
 
 type astar struct {
-	config              Config
-	openList, closeList List
+	config               Config
+	openList, closedList List
+	startNode, endNode   Node
 }
 
 // New creates a new astar instance
@@ -31,9 +33,11 @@ func New(config Config) (*astar, error) {
 	return a.init(), nil
 }
 
+// init initialised needed properties
+// internal function
 func (a *astar) init() *astar {
-	// add invalidNodes directly to the closeList
-	a.closeList.Fill(a.config.InvalidNodes)
+	// add invalidNodes directly to the closedList
+	a.closedList.Fill(a.config.InvalidNodes)
 	return a
 }
 
@@ -50,57 +54,125 @@ func (a *astar) H(nodeA Node, nodeB Node) int {
 func (a *astar) GetNeighborNodes(node Node) []Node {
 	var neighborNodes []Node
 
-	upNode := Node{X: node.X, Y: node.Y + 1}
-	if a.IsAccessible(upNode) {
+	upNode := Node{X: node.X, Y: node.Y + 1, Parent: &node}
+	if a.isAccessible(upNode) {
 		neighborNodes = append(neighborNodes, upNode)
 	}
 
-	downNode := Node{X: node.X, Y: node.Y - 1}
-	if a.IsAccessible(downNode) {
+	downNode := Node{X: node.X, Y: node.Y - 1, Parent: &node}
+	if a.isAccessible(downNode) {
 		neighborNodes = append(neighborNodes, downNode)
 	}
 
-	leftNode := Node{X: node.X - 1, Y: node.Y}
-	if a.IsAccessible(leftNode) {
+	leftNode := Node{X: node.X - 1, Y: node.Y, Parent: &node}
+	if a.isAccessible(leftNode) {
 		neighborNodes = append(neighborNodes, leftNode)
 	}
 
-	rightNode := Node{X: node.X + 1, Y: node.Y}
-	if a.IsAccessible(rightNode) {
+	rightNode := Node{X: node.X + 1, Y: node.Y, Parent: &node}
+	if a.isAccessible(rightNode) {
 		neighborNodes = append(neighborNodes, rightNode)
 	}
-
-	// calculateNode(node, parentNode)?
 
 	return neighborNodes
 }
 
-// IsAccessible checks if the node is reachable in the grid
+// isAccessible checks if the node is reachable in the grid
 // and is not in the invalidNodes slice
-func (a *astar) IsAccessible(node Node) bool {
+func (a *astar) isAccessible(node Node) bool {
 
 	// if node is out of bound
 	if node.X < 0 || node.Y < 0 || node.X > a.config.GridWidth-1 || node.Y > a.config.GridHeight-1 {
 		return false
 	}
 
-	// check if the node is in the closeList
+	// check if the node is in the closedList
 	// the predefined invalidNodes are also in this list
-	if a.closeList.Contains(node) {
+	if a.closedList.Contains(node) {
 		return false
 	}
 
 	return true
 }
 
-func (a *astar) FindPath() ([]Node, error) {
+// IsEndNode checks if the given node has
+// equal node coordinates with the end node
+func (a *astar) IsEndNode(checkNode, endNode Node) bool {
+	return checkNode.X == endNode.X && checkNode.Y == endNode.Y
+}
+
+// FindPath starts the a* algorythm for the given start and end node
+// The return value will be a the fastest way represented as a nodes slice
+//
+// If no path was found it returns nil and an error
+func (a *astar) FindPath(startNode, endNode Node) ([]Node, error) {
+
+	a.startNode = startNode
+	a.endNode = endNode
 
 	defer func() {
 		a.openList.Clear()
-		a.closeList.Clear()
+		a.closedList.Clear()
 	}()
 
-	// todo add calculation
+	a.openList.Add(startNode)
 
-	return []Node{}, errors.New("No path found")
+	for !a.openList.IsEmpty() {
+
+		currentNode, err := a.openList.GetMinFNode()
+		if err != nil {
+			return nil, fmt.Errorf("cannot get minF node %v", err)
+		}
+
+		a.openList.Remove(currentNode)
+		a.closedList.Add(currentNode)
+
+		// we found the path
+		if a.IsEndNode(currentNode, endNode) {
+			return a.getNodePath(currentNode), nil
+		}
+
+		neighbors := a.GetNeighborNodes(currentNode)
+		for _, neighbor := range neighbors {
+			if a.closedList.Contains(neighbor) {
+				continue
+			}
+
+			a.calculateNode(&neighbor)
+
+			if !a.openList.Contains(neighbor) {
+				a.openList.Add(neighbor)
+			}
+		}
+
+	}
+
+	return nil, errors.New("No path found")
+}
+
+// calculateNode calculates the F, G and H value for the given node
+func (a *astar) calculateNode(node *Node) {
+	node.G++
+	node.H = a.H(*node, a.endNode)
+	node.F = node.G + node.H
+}
+
+// getNodePath returns the chain of parent nodes
+// the given node will be still included in the nodes slice
+func (a *astar) getNodePath(currentNode Node) []Node {
+	var nodePath []Node
+	lastNode := currentNode
+	for {
+		parentNode := *currentNode.Parent
+
+		// if the end of node chain
+		if parentNode.Parent == nil {
+			break
+		}
+
+		nodePath = append(nodePath, parentNode)
+		currentNode = parentNode
+	}
+	nodePath = append(nodePath, lastNode)
+	return nodePath
 }

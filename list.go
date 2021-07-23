@@ -78,8 +78,8 @@ func (l *List) GetIndexOfMinF() int {
 	return lastNodeIndex
 }
 
-// GetMinF returns the node with the smallest node.F value
-func (l *List) GetMinF() (Node, error) {
+// GetMinFNode returns the node with the smallest node.F value
+func (l *List) GetMinFNode() (Node, error) {
 	minFIndex := l.GetIndexOfMinF()
 	if minFIndex == -1 {
 		return Node{}, errors.New("no node found")
