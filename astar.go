@@ -172,7 +172,7 @@ func (a *astar) calculateNode(node *Node) {
 // the given node will be still included in the nodes slice
 func (a *astar) getNodePath(currentNode Node) []Node {
 	var nodePath []Node
-	lastNode := currentNode
+	nodePath = append(nodePath, currentNode)
 	for {
 		parentNode := *currentNode.parent
 
@@ -184,6 +184,5 @@ func (a *astar) getNodePath(currentNode Node) []Node {
 		nodePath = append(nodePath, parentNode)
 		currentNode = parentNode
 	}
-	nodePath = append(nodePath, lastNode)
 	return nodePath
 }
