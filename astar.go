@@ -102,7 +102,7 @@ func (a *astar) IsEndNode(checkNode, endNode Node) bool {
 }
 
 // FindPath starts the a* algorythm for the given start and end node
-// The return value will be a the fastest way represented as a nodes slice
+// The return value will be the fastest way represented as a nodes slice
 //
 // If no path was found it returns nil and an error
 func (a *astar) FindPath(startNode, endNode Node) ([]Node, error) {
