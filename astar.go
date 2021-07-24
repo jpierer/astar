@@ -174,6 +174,10 @@ func (a *astar) getNodePath(currentNode Node) []Node {
 	var nodePath []Node
 	nodePath = append(nodePath, currentNode)
 	for {
+		if currentNode.parent == nil {
+			break
+		}
+
 		parentNode := *currentNode.parent
 
 		// if the end of node chain
