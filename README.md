@@ -88,3 +88,9 @@ func main() {
 }
 
 ```
+
+### Support Me
+Give a ⭐ if this project was helpful in any way!
+
+### License
+The code is released under the [MIT LICENSE](/LICENSE).
