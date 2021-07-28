@@ -2,6 +2,12 @@
 
 a* (a-star) pathfinding algorithm written in go
 
+
+## Wikipedia:
+[EN: A* search algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm)
+
+[DE: A*-Algorithmus](https://de.wikipedia.org/wiki/A*-Algorithmus)
+
 Install
 -------
     go get github.com/jpierer/astar@main
@@ -82,3 +88,9 @@ func main() {
 }
 
 ```
+
+### Support Me
+Give a ⭐ if this project was helpful in any way!
+
+### License
+The code is released under the [MIT LICENSE](/LICENSE).
