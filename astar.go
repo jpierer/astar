@@ -39,7 +39,7 @@ func New(config Config) (*astar, error) {
 // internal function
 func (a *astar) init() *astar {
 	// add invalidNodes directly to the closedList
-	a.closedList.Fill(a.config.InvalidNodes)
+	a.closedList.Add(a.config.InvalidNodes...)
 	return a
 }
 

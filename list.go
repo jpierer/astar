@@ -12,13 +12,8 @@ func NewList() *List {
 	return &List{}
 }
 
-// Add a node to the list
-func (l *List) Add(node Node) {
-	l.nodes = append(l.nodes, node)
-}
-
-// Fill adds a slice of nodes to the list
-func (l *List) Fill(nodes []Node) {
+// Add one or more nodes to the list
+func (l *List) Add(nodes ...Node) {
 	l.nodes = append(l.nodes, nodes...)
 }
 

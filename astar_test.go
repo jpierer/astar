@@ -71,8 +71,8 @@ func TestGetNeighborNodes(t *testing.T) {
 		{X: 9, Y: 9},
 	}
 
-	wantList.Fill(validNeighbors)
-	invalidList.Fill(invalidNeighbors)
+	wantList.Add(validNeighbors...)
+	invalidList.Add(invalidNeighbors...)
 
 	for index, neighbor := range a.GetNeighborNodes(node) {
 		if wantList.Contains(neighbor) {
@@ -113,8 +113,8 @@ func TestGetNeighborNodesWithInvalidNodes(t *testing.T) {
 		{X: 1, Y: 2}, // left is not accessible
 	}
 
-	wantList.Fill(validNeighbors)
-	obstacleList.Fill(obstacleNodes)
+	wantList.Add(validNeighbors...)
+	obstacleList.Add(obstacleNodes...)
 
 	// setup a 4x4 grid
 	a, err := New(Config{GridWidth: 4, GridHeight: 4, InvalidNodes: obstacleNodes})
@@ -168,7 +168,7 @@ func TestAstar_FindPathA(t *testing.T) {
 		pathList.Clear()
 	}()
 
-	pathList.Fill(pathNodesToFind)
+	pathList.Add(pathNodesToFind...)
 
 	// setup a 5x5 grid
 	a, err := New(Config{GridWidth: 5, GridHeight: 5, InvalidNodes: obstacleNodes})
@@ -223,7 +223,7 @@ func TestAstar_FindPathB(t *testing.T) {
 		pathList.Clear()
 	}()
 
-	pathList.Fill(pathNodesToFind)
+	pathList.Add(pathNodesToFind...)
 
 	// setup a 5x5 grid
 	a, err := New(Config{GridWidth: 5, GridHeight: 5, InvalidNodes: obstacleNodes})
@@ -280,8 +280,8 @@ func TestAstar_FindPathC(t *testing.T) {
 		pathBList.Clear()
 	}()
 
-	pathAList.Fill(pathA)
-	pathBList.Fill(pathB)
+	pathAList.Add(pathA...)
+	pathBList.Add(pathB...)
 
 	// setup a 5x5 grid
 	a, err := New(Config{GridWidth: 5, GridHeight: 5})
